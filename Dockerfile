@@ -31,33 +31,38 @@ RUN apt-get install -y autoconf apache2-dev libtool libxml2-dev libbz2-dev libge
 RUN apt-get install -y postgresql-9.3-postgis-2.1 postgresql-contrib postgresql-server-dev-9.3
 
 # Install osm2pgsql
-RUN cd /tmp && git clone git://github.com/openstreetmap/osm2pgsql.git
-RUN cd /tmp/osm2pgsql && \
+RUN cd /tmp && git clone git://github.com/openstreetmap/osm2pgsql.git && \
+    cd /tmp/osm2pgsql && \
     ./autogen.sh && \
     ./configure && \
-    make && make install
+    make && make install && \
+    cd /tmp && rm -rf /tmp/osm2pgsql
+
+# TODO: mapnik 3.0.5
 
 # Install the Mapnik library
-RUN cd /tmp && git clone git://github.com/mapnik/mapnik
-RUN cd /tmp/mapnik && \
+RUN cd /tmp && git clone git://github.com/mapnik/mapnik && \
+    cd /tmp/mapnik && \
     git checkout 2.2.x && \
     python scons/scons.py configure INPUT_PLUGINS=all OPTIMIZATION=3 SYSTEM_FONTS=/usr/share/fonts/truetype/ && \
     python scons/scons.py && \
     python scons/scons.py install && \
-    ldconfig
+    ldconfig && \
+    cd /tmp && rm -rf /tmp/mapnik
 
 # Verify that Mapnik has been installed correctly
 RUN python -c 'import mapnik'
 
 # Install mod_tile and renderd
-RUN cd /tmp && git clone git://github.com/openstreetmap/mod_tile.git
-RUN cd /tmp/mod_tile && \
+RUN cd /tmp && git clone git://github.com/openstreetmap/mod_tile.git && \
+    cd /tmp/mod_tile && \
     ./autogen.sh && \
     ./configure && \
     make && \
     make install && \
     make install-mod_tile && \
-    ldconfig
+    ldconfig && \
+    cd /tmp && rm -rf /tmp/mod_tile
 
 # Install the Mapnik stylesheet
 RUN cd /usr/local/src && svn co http://svn.openstreetmap.org/applications/rendering/mapnik mapnik-style
