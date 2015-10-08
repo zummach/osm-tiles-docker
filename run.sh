@@ -61,8 +61,12 @@ createdb () {
 }
 
 import () {
-    # Find the most recent import.pbf or import.osm
-    import=$( ls -1t /data/import.pbf /data/import.osm 2>/dev/null | head -1 )
+    if [[ -v OSM_IMPORT_FILE ]]; then
+        import=$OSM_IMPORT_FILE
+    else
+        # Find the most recent import.pbf or import.osm
+        import=$( ls -1t /data/import.pbf /data/import.osm 2>/dev/null | head -1 )
+    fi
     test -n "${import}" || \
         die "No import file present: expected /data/import.osm or /data/import.pbf"
 
