@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -eux
 
 ##
 # Run OpenStreetMap tile server operations
