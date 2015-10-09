@@ -61,14 +61,10 @@ createdb () {
 }
 
 import () {
-    if [[ -v OSM_IMPORT_FILE ]]; then
-        import=$OSM_IMPORT_FILE
-    else
-        # Find the most recent import.pbf or import.osm
-        import=$( ls -1t /data/import.pbf /data/import.osm 2>/dev/null | head -1 )
-    fi
+    # Assign from env var or find the most recent import.pbf or import.osm
+    import=${OSM_IMPORT_FILE:-$( ls -1t /data/import.pbf /data/import.osm 2>/dev/null | head -1 )}
     test -n "${import}" || \
-        die "No import file present: expected /data/import.osm or /data/import.pbf"
+        die "No import file present: expected specification via OSM_IMPORT_FILE or existence of /data/import.osm or /data/import.pbf"
 
     echo "Importing ${import} into gis"
     echo "$OSM_IMPORT_CACHE" | grep -P '^[0-9]+$' || \
