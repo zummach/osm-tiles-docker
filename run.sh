@@ -81,6 +81,25 @@ import () {
     $asweb osm2pgsql --slim --hstore --cache $OSM_IMPORT_CACHE --database gis --number-processes $number_processes $import
 }
 
+# render tiles via render_list
+render () {
+    startdb
+    startservices
+    # wait for services to start
+    sleep 10
+    max_zoom=${OSM_MAX_ZOOM:-8}
+
+    number_processes=`nproc`
+    # Limit to 8 to prevent overwhelming pg with connections
+    if test $number_processes -ge 8
+    then
+        number_processes=8
+    fi
+    echo "Rendering OSM tiles"
+
+    $asweb render_list --force --all --max-zoom $max_zoom --num-threads $number_processes
+}
+
 dropdb () {
     echo "Dropping database"
     cd /var/www
