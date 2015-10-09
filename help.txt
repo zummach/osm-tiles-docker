@@ -30,6 +30,13 @@ Import data:
   docker run -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles \
          startdb import
 
+  An alternate path to the import file can be specified via the `OSM_IMPORT_FILE` environment variable.
+
+  The following will import `/data/north-america-latest.osm.pbf`:
+
+  docker run --env OSM_IMPORT_FILE="/data/north-america-latest.osm.pbf" -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles \
+         startdb import
+
 Start the webserver:
   Once data is loaded and users have been created run the webserver:
 
