@@ -37,6 +37,17 @@ Import data:
   docker run --env OSM_IMPORT_FILE="/data/north-america-latest.osm.pbf" -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles \
          startdb import
 
+Render tiles:
+  The following will render tiles to `/var/lib/mod_tile` via `renderd`s program `render_list`, to default max-zoom level of 8:
+
+  docker run -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles render
+
+  An alternate max-zoom level can be specified via the `OSM_MAX_ZOOM` environment variable.
+
+  The following will render tiles to a max-zoom level of 12:
+
+  docker run --env OSM_MAX_ZOOM=12 -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles render
+
 Start the webserver:
   Once data is loaded and users have been created run the webserver:
 
