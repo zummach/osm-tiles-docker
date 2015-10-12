@@ -12,6 +12,7 @@ Commands:
   createuser       Create the osm user in the database
   createdb         Create the osm database
   import           Import osm data into the database
+  render           Render tiles from the database
   startservices    Start the osm web services
   cli              Drop into a bash shell
   dropdb           Drop the osm database
