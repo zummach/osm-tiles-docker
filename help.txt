@@ -55,4 +55,11 @@ Start the webserver:
   docker run -P -v /data/osm-postgresql:/var/lib/postgresql homme/openstreetmap-tiles \
          startdb startservices
 
+  A demo index.html page, based on a simple OpenLayers example configured to load
+  the image's OpenStreetMap tiles as its base layer, is served as Apache's root document.
+  If localhost's port 8080 is forwarded to the image's port 80, then the demo
+  index.html will be available @:
+
+  http://localhost:8080
+
 For further information run the cli and look at /usr/local/share/doc/README.md.
