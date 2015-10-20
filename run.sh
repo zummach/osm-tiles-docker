@@ -59,6 +59,7 @@ initdb () {
 }
 
 import () {
+    startdb
     # Assign from env var or find the most recent import.pbf or import.osm
     import=${OSM_IMPORT_FILE:-$( ls -1t /data/import.pbf /data/import.osm 2>/dev/null | head -1 )}
     test -n "${import}" || \
@@ -112,6 +113,7 @@ cli () {
 }
 
 startservices () {
+    startdb
     _startservice renderd
     _startservice apache2
 }
