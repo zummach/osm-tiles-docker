@@ -84,7 +84,7 @@ import () {
 # render tiles via render_list
 render () {
     startdb
-    startservices
+    _startservice renderd
     # wait for services to start
     sleep 10
     max_zoom=${OSM_MAX_ZOOM:-8}
