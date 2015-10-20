@@ -9,6 +9,8 @@ Commands:
   help             Show this help message
   initdb           Initialise the postgres database, create osm database and database user
   startdb          Start the postgresql database
+  createuser       Create the osm user in the database
+  createdb         Create the osm database
   import           Import osm data into the database
   render           Render tiles from the database
   startservices    Start the database and osm web services

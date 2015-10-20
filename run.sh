@@ -34,11 +34,17 @@ initdb () {
     ln -s /etc/ssl/private/ssl-cert-snakeoil.key /var/lib/postgresql/9.3/main/server.key
 
     startdb
+    createuser
+    createdb
+}
 
+createuser () {
     USER=www-data
     echo "Creating user $USER"
     setuser postgres createuser -s $USER
+}
 
+createdb () {
     dbname=gis
     echo "Creating database $dbname"
     cd /var/www
