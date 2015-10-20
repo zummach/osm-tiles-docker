@@ -89,7 +89,7 @@ render () {
     sleep 10
     max_zoom=${OSM_MAX_ZOOM:-8}
 
-    number_processes=`nproc`
+    number_processes=${OSM_RENDER_THREADS:-`nproc`}
     # Limit to 8 to prevent overwhelming pg with connections
     if test $number_processes -ge 8
     then
