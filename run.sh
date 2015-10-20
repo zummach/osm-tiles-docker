@@ -87,6 +87,7 @@ render () {
     _startservice renderd
     # wait for services to start
     sleep 10
+    min_zoom=${OSM_MIN_ZOOM:-0}
     max_zoom=${OSM_MAX_ZOOM:-8}
 
     number_processes=${OSM_RENDER_THREADS:-`nproc`}
@@ -97,7 +98,7 @@ render () {
     fi
     echo "Rendering OSM tiles"
 
-    $asweb render_list --force --all --max-zoom $max_zoom --num-threads $number_processes
+    $asweb render_list --force --all --min-zoom $min_zoom --max-zoom $max_zoom --num-threads $number_processes
 }
 
 dropdb () {
