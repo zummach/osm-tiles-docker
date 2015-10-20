@@ -43,11 +43,16 @@ Render tiles:
 
   docker run -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles render
 
-  An alternate max-zoom level can be specified via the `OSM_MAX_ZOOM` environment variable.
+  Alternate min and max-zoom levels can be specified via the `OSM_MIN_ZOOM` and
+  `OSM_MAX_ZOOM` environment variables, respectively.
 
   The following will render tiles to a max-zoom level of 12:
 
   docker run --env OSM_MAX_ZOOM=12 -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles render
+
+  The number of threads used for rendering can be specified via the `OSM_RENDER_THREADS`
+  environment variable. If not specified, the number of rendering threads used will either
+  be 8 or the number of processor cores, whichever is lesser.
 
 Start the webserver:
   Once data is loaded and users have been created run the webserver:
