@@ -7,10 +7,8 @@ Positional arguments:
 
 Commands:
   help             Show this help message
-  initdb           Initialise the postgres database
+  initdb           Initialise the postgres database, create osm database and database user
   startdb          Start the postgresql database
-  createuser       Create the osm user in the database
-  createdb         Create the osm database
   import           Import osm data into the database
   render           Render tiles from the database
   startservices    Start the osm web services
@@ -22,7 +20,7 @@ Set up a database saved on an external volume:
   volume that can be used to persist the data:
 
   docker run -v /data/osm-postgresql:/var/lib/postgresql homme/openstreetmap-tiles \
-         initdb startdb createuser createdb import
+         initdb
 
 Import data:
   The following will import the file at `/data/import.pbf` or `/data/import.osm`
