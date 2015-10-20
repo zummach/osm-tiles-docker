@@ -89,7 +89,7 @@ render () {
     sleep 10
     min_zoom=${OSM_MIN_ZOOM:-0}
     max_zoom=${OSM_MAX_ZOOM:-8}
-
+    render_force_arg=$( [ "$OSM_RENDER_FORCE" != false ] && echo '--force' || echo '' )
     number_processes=${OSM_RENDER_THREADS:-`nproc`}
     # Limit to 8 to prevent overwhelming pg with connections
     if test $number_processes -ge 8
@@ -98,7 +98,7 @@ render () {
     fi
     echo "Rendering OSM tiles"
 
-    $asweb render_list --force --all --min-zoom $min_zoom --max-zoom $max_zoom --num-threads $number_processes
+    $asweb render_list $render_force_arg --all --min-zoom $min_zoom --max-zoom $max_zoom --num-threads $number_processes
 }
 
 dropdb () {
