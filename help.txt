@@ -11,7 +11,7 @@ Commands:
   startdb          Start the postgresql database
   import           Import osm data into the database
   render           Render tiles from the database
-  startservices    Start the osm web services
+  startservices    Start the database and osm web services
   cli              Drop into a bash shell
   dropdb           Drop the osm database
 
@@ -27,14 +27,14 @@ Import data:
   into the database.
 
   docker run -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles \
-         startdb import
+         import
 
   An alternate path to the import file can be specified via the `OSM_IMPORT_FILE` environment variable.
 
   The following will import `/data/north-america-latest.osm.pbf`:
 
   docker run --env OSM_IMPORT_FILE="/data/north-america-latest.osm.pbf" -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles \
-         startdb import
+         import
 
 Render tiles:
   The following will render tiles to `/var/lib/mod_tile` via `renderd`s program `render_list`, to default max-zoom level of 8:
@@ -60,7 +60,7 @@ Start the webserver:
   Once data is loaded and users have been created run the webserver:
 
   docker run -P -v /data/osm-postgresql:/var/lib/postgresql homme/openstreetmap-tiles \
-         startdb startservices
+         startservices
 
   A demo index.html page, based on a simple OpenLayers example configured to load
   the image's OpenStreetMap tiles as its base layer, is served as Apache's root document.
