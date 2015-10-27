@@ -128,24 +128,11 @@ help () {
     cat /usr/local/share/doc/run/help.txt
 }
 
-_wait () {
-    WAIT=$1
-    NOW=`date +%s`
-    BOOT_TIME=`stat -c %X /etc/container_environment.sh`
-    UPTIME=`expr $NOW - $BOOT_TIME`
-    DELTA=`expr 5 - $UPTIME`
-    if [ $DELTA -gt 0 ]
-    then
-	sleep $DELTA
-    fi
-}
+# wait until 2 seconds after boot when runit will have started supervising the services.
 
-# Unless there is a terminal attached wait until 5 seconds after boot
-# when runit will have started supervising the services.
-if ! tty --silent
-then
-    _wait 5
-fi
+echo "sleeping"
+sleep 2
+echo "slept"
 
 # Execute the specified command sequence
 for arg
