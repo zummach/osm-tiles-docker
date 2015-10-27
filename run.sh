@@ -130,9 +130,7 @@ help () {
 
 # wait until 2 seconds after boot when runit will have started supervising the services.
 
-echo "sleeping"
 sleep 2
-echo "slept"
 
 # Execute the specified command sequence
 for arg
