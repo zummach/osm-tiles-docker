@@ -8,7 +8,7 @@
 # <http://switch2osm.org/serving-tiles/manually-building-a-tile-server-12-04/>.
 #
 
-FROM phusion/baseimage:0.9.17
+FROM phusion/baseimage:0.9.18
 MAINTAINER Erik Johnson <erik@erikj.me>
 
 # Set the locale. This affects the encoding of the Postgresql template
@@ -33,6 +33,7 @@ RUN apt-get install -y postgresql-9.3-postgis-2.1 postgresql-contrib postgresql-
 # Install osm2pgsql
 RUN cd /tmp && git clone git://github.com/openstreetmap/osm2pgsql.git && \
     cd /tmp/osm2pgsql && \
+    git checkout 0.88.1 && \
     ./autogen.sh && \
     ./configure && \
     make && make install && \
