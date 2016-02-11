@@ -21,34 +21,34 @@ Set up a database saved on an external volume:
   The following command will initialise the postgresql database on an external
   volume that can be used to persist the data:
 
-  docker run -v /data/osm-postgresql:/var/lib/postgresql homme/openstreetmap-tiles \
+  docker run -v /data/osm-postgresql:/var/lib/postgresql erikj/osm-tiles \
          initdb
 
 Import data:
   The following will import the file at `/data/import.pbf` or `/data/import.osm`
   into the database.
 
-  docker run -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles \
+  docker run -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data erikj/osm-tiles \
          import
 
   An alternate path to the import file can be specified via the `OSM_IMPORT_FILE` environment variable.
 
   The following will import `/data/north-america-latest.osm.pbf`:
 
-  docker run --env OSM_IMPORT_FILE="/data/north-america-latest.osm.pbf" -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles \
+  docker run --env OSM_IMPORT_FILE="/data/north-america-latest.osm.pbf" -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data erikj/osm-tiles \
          import
 
 Render tiles:
   The following will render tiles to `/var/lib/mod_tile` via `renderd`s program `render_list`, to default max-zoom level of 8:
 
-  docker run -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles render
+  docker run -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data erikj/osm-tiles render
 
   Alternate min and max-zoom levels can be specified via the `OSM_MIN_ZOOM` and
   `OSM_MAX_ZOOM` environment variables, respectively.
 
   The following will render tiles to a max-zoom level of 12:
 
-  docker run --env OSM_MAX_ZOOM=12 -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data homme/openstreetmap-tiles render
+  docker run --env OSM_MAX_ZOOM=12 -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data erikj/osm-tiles render
 
   The number of threads used for rendering can be specified via the `OSM_RENDER_THREADS`
   environment variable. If not specified, the number of rendering threads used will either
@@ -61,7 +61,7 @@ Render tiles:
 Start the webserver:
   Once data is loaded and users have been created run the webserver:
 
-  docker run -P -v /data/osm-postgresql:/var/lib/postgresql homme/openstreetmap-tiles \
+  docker run -P -v /data/osm-postgresql:/var/lib/postgresql erikj/osm-tiles \
          startservices
 
   A demo index.html page, based on a simple OpenLayers example configured to load
