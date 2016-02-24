@@ -16,7 +16,7 @@ For usage instructions, see [`help.txt`](https://github.com/erikj/osm-tiles-dock
 
 ## About
 
-The container runs Ubuntu 14.04 (Trusty) and is based on the
+The container runs Ubuntu 14.04 (Trusty) and is based on [erikj/baseimage](https://hub.docker.com/r/erikj/baseimage), which is an adaptation of
 [phusion/baseimage-docker](https://github.com/phusion/baseimage-docker).  It
 includes:
 
