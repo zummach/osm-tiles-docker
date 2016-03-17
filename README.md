@@ -12,7 +12,7 @@ also provides instructions for managing the back end database, allowing you to:
 * Import OSM data into the database
 * Drop the database
 
-For usage instructions, see [`help.txt`](https://github.com/erikj/osm-tiles-docker/blob/master/help.txt) or run `docker run erikj/osm-tiles` .
+For usage instructions, see [`help.txt`](https://github.com/ncareol/osm-tiles-docker/blob/master/help.txt) or run `docker run ncareol/osm-tiles` .
 
 ## About
 
@@ -32,5 +32,5 @@ includes:
 
 This is a work in progress and although generally adequate it could benefit
 from improvements.  Please
-[submit issues](https://github.com/erikj/osm-tiles-docker/issues)
+[submit issues](https://github.com/ncareol/osm-tiles-docker/issues)
 on GitHub. Pull requests are very welcome!
