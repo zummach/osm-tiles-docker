@@ -8,8 +8,8 @@
 # <http://switch2osm.org/serving-tiles/manually-building-a-tile-server-12-04/>.
 #
 
-FROM erikj/baseimage:0.9.18
-MAINTAINER Erik Johnson <erik@erikj.me>
+FROM ncareol/baseimage:0.9.18
+MAINTAINER Erik Johnson <ej@ucar.edu>
 
 # Set the locale. This affects the encoding of the Postgresql template
 # databases.
