@@ -1,4 +1,4 @@
-## -*- docker-image-name: "erikj/osm-tiles:latest" -*-
+## -*- docker-image-name: "ncareol/osm-tiles" -*-
 
 ##
 # The OpenStreetMap Tile Server
