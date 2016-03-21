@@ -10,6 +10,9 @@ Source: <https://github.com/ncareol/osm-tiles-docker>
 
 ## Tags
 
+- `ncareol/osm-tiles:0.1.7`
+  - update `help.txt` / help output for new organization repository: `ncareol`
+  - based on [`v0.1.7`](https://github.com/ncareol/osm-tiles-docker/releases/tag/v0.1.7)
 - `ncareol/osm-tiles:0.1.6`
   - update to reflect correct and updated git repository URL
   - based on [`v0.1.6`](https://github.com/ncareol/osm-tiles-docker/releases/tag/v0.1.6)
