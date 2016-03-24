@@ -38,6 +38,15 @@ Import data:
   docker run --env OSM_IMPORT_FILE="/data/north-america-latest.osm.pbf" -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data ncareol/osm-tiles \
          import
 
+  Caching can improve the performance of import. Cache is configured via the
+  OSM_IMPORT_CACHE environment variable, which has a default value of 40MB. The value is
+  specified in units of MB, and values between 15-80% of available memory are recommended,
+  but should take into consideration usage by other applications on the system. Specifying
+  more memory than the system has available will result in an error. For further details,
+  see:
+
+  - http://wiki.openstreetmap.org/wiki/Osm2pgsql#Parameters
+
 Render tiles:
   The following will render tiles to `/var/lib/mod_tile` via `renderd`s program `render_list`, to default max-zoom level of 8:
 
