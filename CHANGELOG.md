@@ -10,6 +10,10 @@ Source: <https://github.com/ncareol/osm-tiles-docker>
 
 ## Tags
 
+
+- `ncareol/osm-tiles:0.1.9`
+  - document `OSM_IMPORT_CACHE` in `help.txt`
+  - based on [`v0.1.9`](https://github.com/ncareol/osm-tiles-docker/releases/tag/v0.1.9)
 - `ncareol/osm-tiles:0.1.8`
   - reduce default `OSM_IMPORT_CACHE` to a more manageable 40 (MB)
   - based on [`v0.1.8`](https://github.com/ncareol/osm-tiles-docker/releases/tag/v0.1.8)
