@@ -80,4 +80,10 @@ Start the webserver:
 
   http://localhost:8080
 
+  To test previously rendered tiles without running the database and renderd, use the
+  `startweb` command:
+
+  docker run -P -v /data/mod_tile:/var/lib/mod_tile ncareol/osm-tiles \
+         startweb
+
 For further information run the cli and look at /usr/local/share/doc/README.md.

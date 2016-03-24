@@ -124,6 +124,10 @@ startservices () {
     _startservice apache2
 }
 
+startweb () {
+    _startservice apache2
+}
+
 help () {
     cat /usr/local/share/doc/run/help.txt
 }
