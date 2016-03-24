@@ -1,0 +1,10 @@
+.git
+.vagrant*
+tmp
+wiki
+*.md
+!README.md
+!CHANGELOG.md
+LICENSE
+renderd.conf.polar
+postgresql.conf.sed.1GB
