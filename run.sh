@@ -130,6 +130,7 @@ startweb () {
 
 help () {
     cat /usr/local/share/doc/run/help.txt
+    exit
 }
 
 # wait until 2 seconds after boot when runit will have started supervising the services.
