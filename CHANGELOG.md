@@ -11,6 +11,10 @@ Source: <https://github.com/ncareol/osm-tiles-docker>
 ## Tags
 
 
+- `ncareol/osm-tiles:0.1.10`
+  - add `startweb` command to start only `Apache2`, and not database and `renderd`, for testing only previously generated tiles
+  - `help()`: exit after displaying `help` output
+  - based on [`v0.1.10`](https://github.com/ncareol/osm-tiles-docker/releases/tag/v0.1.10)
 - `ncareol/osm-tiles:0.1.9`
   - document `OSM_IMPORT_CACHE` in `help.txt`
   - based on [`v0.1.9`](https://github.com/ncareol/osm-tiles-docker/releases/tag/v0.1.9)
