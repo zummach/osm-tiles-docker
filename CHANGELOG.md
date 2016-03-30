@@ -1,15 +1,4 @@
-# CHANGELOG
-
-## Background
-
-[`ncareol/osm-tiles`](https://hub.docker.com/r/ncareol/osm-tiles/)
-
-Based on <https://hub.docker.com/r/homme/openstreetmap-tiles-docker/>
-
-Source: <https://github.com/ncareol/osm-tiles-docker>
-
-## Tags
-
+# ChangeLog
 
 - `ncareol/osm-tiles:0.1.10`
   - add `startweb` command to start only `Apache2`, and not database and `renderd`, for testing only previously generated tiles
