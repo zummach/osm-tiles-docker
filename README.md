@@ -1,29 +1,46 @@
-# OpenStreetMap Tile Server Container
+# ncareol/osm-tiles
 
-This repository contains instructions for building a [Docker](https://www.docker.io/) image containing the **OpenStreetMap** tile serving software stack. It is based on the [Switch2OSM instructions](http://switch2osm.org/serving-tiles/manually-building-a-tile-server-12-04/).
+<!--About-->
 
-As well as providing an easy way to set up and run the tile serving software it also provides instructions for managing the back end database, allowing you to:
+`ncareol/osm-tiles` is a **Docker** image that provides a full stack for working w/ **OpenStreetMap** data. It can be used to:
 
-- Create the database
-- Import **OSM** data into the database
-- Drop the database
+- Initialize **PostgreSQL** database w/ **PostGIS** extensions: `initdb`
+- Import **OpenStreetMap** data into **PostgreSQL** database: `import`
+- Optionally pre-generate tiles: `render`
+- Serve pre-generated (if available) and dynamically generated tiles from **Apache**, **renderd** and **mapnik** via an **OpenLayers** interface: `startservices`
+- Serve exclusively pre-generated tiles from **Apache** via an **OpenLayers** interface: `startweb`
 
-For usage instructions, see [`help.txt`](https://github.com/ncareol/osm-tiles-docker/blob/master/help.txt) or run
+## Background
+
+This image is adapted from [`homme/openstreetmap-tiles-docker`](https://hub.docker.com/r/homme/openstreetmap-tiles-docker/), which is based on the [Switch2OSM instructions](http://switch2osm.org/serving-tiles/manually-building-a-tile-server-12-04/).
+
+`ncareol/osm-tiles` runs **Ubuntu** 14.04 (Trusty) and is based on [ncareol/baseimage](https://hub.docker.com/r/ncareol/baseimage), which is an adaptation of [phusion/baseimage-docker](https://github.com/phusion/baseimage-docker). It includes:
+
+- **PostgreSQL** `9.3`
+- **PostGIS** extensions
+- **Apache** `2.2`
+- [**osm2pgsql**](http://wiki.openstreetmap.org/wiki/Osm2pgsql)
+- [**mapnik**](http://mapnik.org/)
+- [**mod_tile**](http://wiki.openstreetmap.org/wiki/Mod_tile), an **Apache** module that also provides scripts for rendering tiles
+
+Source code is available on **GitHub**: <https://github.com/ncareol/osm-tiles-docker>
+
+**Docker** image is available on **Docker Hub**: <https://hub.docker.com/r/ncareol/osm-tiles>
+
+## Usage
+
+Prerequisites, configuration and a demonstration of the complete workflow are available on the [wiki](https://github.com/ncareol/osm-tiles-docker/wiki).
+
+Command reference is available in [`help.txt`](https://github.com/ncareol/osm-tiles-docker/blob/master/help.txt) or by running the image:
 
 ```sh
-$ docker run ncareol/osm-tiles`
+$ docker run ncareol/osm-tiles
 ```
-
-## About
-
-The container runs **Ubuntu** 14.04 (Trusty) and is based on [ncareol/baseimage](https://hub.docker.com/r/ncareol/baseimage), which is an adaptation of [phusion/baseimage-docker](https://github.com/phusion/baseimage-docker). It includes:
-
-- **Postgresql** 9.3
-- **Apache** 2.2
-- The latest [**Osm2pgsql**](http://wiki.openstreetmap.org/wiki/Osm2pgsql) code (at the time of image creation)
-- The latest [**Mapnik**](http://mapnik.org/) code (at the time of image creation)
-* The latest [**mod_tile**](http://wiki.openstreetmap.org/wiki/Mod_tile) code (at the time of image creation)
 
 ## Issues
 
-This is a work in progress and although generally adequate it could benefit from improvements. Please [submit issues](https://github.com/ncareol/osm-tiles-docker/issues) on **GitHub**. Pull requests are very welcome!
+Issues can be reported on **GitHub**: <https://github.com/ncareol/osm-tiles-docker/issues>
+
+## License
+
+[**GPLv3**](https://github.com/ncareol/osm-tiles-docker/blob/master/LICENSE)
