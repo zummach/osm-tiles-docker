@@ -12,7 +12,7 @@
 - [`ncareol/osm-tiles:0.1.6`](https://github.com/ncareol/osm-tiles-docker/releases/tag/v0.1.6)
   - update to reflect correct and updated git repository URL
 - [`ncareol/osm-tiles:0.1.5`](https://github.com/ncareol/osm-tiles-docker/commit/4315636)
-  - base image: use`ncareol` build of `baseimage`, `ncareol/baseimage:0.9.18`, which disables `cron`
+  - base image: use `ncareol` build of `baseimage`, `ncareol/baseimage:0.9.18`, which disables `cron`
 - [`ncareol/osm-tiles:0.1.4`](https://github.com/ncareol/osm-tiles-docker/commit/f7eff9e)
   - base image: update to latest `phusion/baseimage`: `0.9.18`
   - locked `osm2pgsql` to version `0.88.1` to avoid breaking changes from `master`
@@ -21,22 +21,22 @@
 - [`ncareol/osm-tiles:0.1.2`](https://github.com/ncareol/osm-tiles-docker/commit/8143db6)
   - `postgresql` config: set work_mem to `512MB`;
 - [`ncareol/osm-tiles:0.1.1`](https://github.com/ncareol/osm-tiles-docker/commit/f29f1f3)
-  - `run.sh`, remove debugging output
+  - `run.sh`: remove debugging output
 - [`ncareol/osm-tiles:0.1.0`](https://github.com/ncareol/osm-tiles-docker/commit/938e088)
-  - `run.sh`, remove `_wait()` and `tty` logic, just always sleep 2 seconds;
+  - `run.sh`: remove `_wait()` and `tty` logic, just always sleep 2 seconds;
 - [`ncareol/osm-tiles:0.0.10`](https://github.com/ncareol/osm-tiles-docker/commit/ed7fee9)
-  - `run.sh`, restore `createuser()` and `createdb()` functions
+  - `run.sh`: restore `createuser()` and `createdb()` functions
 - [`ncareol/osm-tiles:0.0.9`](https://github.com/ncareol/osm-tiles-docker/commit/c809984)
-  - `run.sh`, preface `import` and `startservices` w/ `startdb`
+  - `run.sh`: preface `import` and `startservices` w/ `startdb`
 - [`ncareol/osm-tiles:0.0.8`](https://github.com/ncareol/osm-tiles-docker/commit/a9ccfeb)
-  - `run.sh`, move `createuser()` and `createdb()` into `initdb()`
+  - `run.sh`: move `createuser()` and `createdb()` into `initdb()`
 - [`ncareol/osm-tiles:0.0.7`](https://github.com/ncareol/osm-tiles-docker/commit/6ff3c9c)
-  - `run.sh`, `render()`: add more control via environment variables
+  - `run.sh`: `render()`: add more control via environment variables
     - see `help` for more details
 - [`ncareol/osm-tiles:0.0.6`](https://github.com/ncareol/osm-tiles-docker/commit/4794816)
   - `index.html`: Serve simple OpenLayers example as Apache root document
 - [`ncareol/osm-tiles:0.0.5`](https://github.com/ncareol/osm-tiles-docker/commit/5d66fe5)
-  - `run.sh`, `import()`: allow specification of path to import file via `OSM_IMPORT_FILE` environment variable;
+  - `run.sh`: `import()`: allow specification of path to import file via `OSM_IMPORT_FILE` environment variable;
   - `run.sh`: add `render()` function, to render tiles;
 - [`ncareol/osm-tiles:0.0.4`](https://github.com/ncareol/osm-tiles-docker/commit/f17931d)
   - concatenate installations from source and remove sources;
