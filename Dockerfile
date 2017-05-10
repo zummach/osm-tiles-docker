@@ -92,11 +92,16 @@ RUN cd /tmp && git clone https://github.com/mapnik/mapnik && \
 RUN python -c 'import mapnik'
 
 # Install mod_tile and renderd
+#master is not a good point to rely on, but no tag exists on mod_tile Github's project since v0.4 (2011) !
+#So we rely on the last commit of the master branch at the time of this Dockerfile
+ENV MOD_TILE_VERSION e25bfdba1c1f2103c69529f1a30b22a14ce311f1
+ENV MOD_TILE_PARALLEL_BUILD 4
 RUN cd /tmp && git clone https://github.com/openstreetmap/mod_tile.git && \
     cd /tmp/mod_tile && \
+    git reset --hard $MOD_TILE_VERSION && \
     ./autogen.sh && \
     ./configure && \
-    make && \
+    make -j $MOD_TILE_PARALLEL_BUILD && \
     make install && \
     make install-mod_tile && \
     ldconfig && \
