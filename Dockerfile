@@ -110,13 +110,13 @@ RUN cd /usr/local/src/mapnik-style && ./get-coastlines.sh /usr/local/share
 
 # Configure mapnik style-sheets
 RUN cd /usr/local/src/mapnik-style/inc && cp fontset-settings.xml.inc.template fontset-settings.xml.inc
-ADD datasource-settings.sed /tmp/
+COPY ./datasource-settings.sed /tmp/
 RUN cd /usr/local/src/mapnik-style/inc && sed --file /tmp/datasource-settings.sed  datasource-settings.xml.inc.template > datasource-settings.xml.inc
-ADD settings.sed /tmp/
+COPY ./settings.sed /tmp/
 RUN cd /usr/local/src/mapnik-style/inc && sed --file /tmp/settings.sed  settings.xml.inc.template > settings.xml.inc
 
 # Configure renderd
-ADD renderd.conf.sed /tmp/
+COPY ./renderd.conf.sed /tmp/
 RUN cd /usr/local/etc && sed --file /tmp/renderd.conf.sed --in-place renderd.conf
 
 # Create the files required for the mod_tile system to run
@@ -124,34 +124,34 @@ RUN mkdir /var/run/renderd && chown www-data: /var/run/renderd
 RUN mkdir /var/lib/mod_tile && chown www-data /var/lib/mod_tile
 
 # Replace default apache index page with Leaflet demo
-ADD index.html /var/www/html/index.html
+COPY ./index.html /var/www/html/
 
 # Configure mod_tile
-ADD mod_tile.load /etc/apache2/mods-available/
-ADD mod_tile.conf /etc/apache2/mods-available/
+COPY ./mod_tile.load /etc/apache2/mods-available/
+COPY ./mod_tile.conf /etc/apache2/mods-available/
 RUN a2enmod mod_tile
 
 # Ensure the webserver user can connect to the gis database
 RUN sed -i -e 's/local   all             all                                     peer/local gis www-data peer/' /etc/postgresql/9.3/main/pg_hba.conf
 
 # Tune postgresql
-ADD postgresql.conf.sed /tmp/
+COPY ./postgresql.conf.sed /tmp/
 RUN sed --file /tmp/postgresql.conf.sed --in-place /etc/postgresql/9.3/main/postgresql.conf
 
 # Define the application logging logic
-ADD syslog-ng.conf /etc/syslog-ng/conf.d/local.conf
+COPY ./syslog-ng.conf /etc/syslog-ng/conf.d/local.conf
 RUN rm -rf /var/log/postgresql
 
 # Create a `postgresql` `runit` service
-ADD postgresql /etc/sv/postgresql
+COPY ./postgresql /etc/sv/postgresql/
 RUN update-service --add /etc/sv/postgresql
 
 # Create an `apache2` `runit` service
-ADD apache2 /etc/sv/apache2
+COPY ./apache2 /etc/sv/apache2/
 RUN update-service --add /etc/sv/apache2
 
 # Create a `renderd` `runit` service
-ADD renderd /etc/sv/renderd
+COPY ./renderd /etc/sv/renderd/
 RUN update-service --add /etc/sv/renderd
 
 # Clean up APT when done
@@ -164,16 +164,15 @@ EXPOSE 80 5432
 ENV OSM_IMPORT_CACHE 40
 
 # Add the README
-ADD README.md /usr/local/share/doc/
+COPY ./README.md /usr/local/share/doc/
 
 # Add the help file
-RUN mkdir -p /usr/local/share/doc/run
-ADD help.txt /usr/local/share/doc/run/help.txt
+COPY ./help.txt /usr/local/share/doc/run/
 
 RUN rm -Rf /var/lib/postgresql/9.3/main
 
 # Add the entrypoint
-ADD run.sh /usr/local/sbin/run
+COPY ./run.sh /usr/local/sbin/run
 ENTRYPOINT ["/sbin/my_init", "--", "/usr/local/sbin/run"]
 
 # Default to showing the usage text
