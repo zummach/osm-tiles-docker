@@ -131,6 +131,7 @@ RUN cd /tmp && \
     nodejs /usr/local/bin/carto project.mml > style.xml && \
     find /usr/share/mapnik/openstreetmap-carto/data \( -type f -iname "*.zip" -o -iname "*.tgz" \) -delete
 
+COPY ./build/drop_indexes.sql /usr/share/mapnik/openstreetmap-carto/
 
 # Install mod_tile and renderd
 #master is not a good point to rely on, but no tag exists on mod_tile Github's project since v0.4 (2011) !

@@ -71,6 +71,9 @@ import () {
     test -n "${import}" || \
         die "No import file present: expected specification via OSM_IMPORT_FILE or existence of /data/import.osm or /data/import.pbf"
 
+    echo "Removing indexes from gis..."
+    $asweb psql -d gis -f /usr/share/mapnik/openstreetmap-carto/drop_indexes.sql
+
     echo "Importing ${import} into gis"
     echo "$OSM_IMPORT_CACHE" | grep -P '^[0-9]+$' || \
         die "Unexpected cache type: expected an integer but found: ${OSM_IMPORT_CACHE}"
@@ -84,6 +87,11 @@ import () {
     fi
 
     $asweb osm2pgsql --slim --hstore --cache $OSM_IMPORT_CACHE --database gis --number-processes $number_processes --style /usr/share/mapnik/openstreetmap-carto/openstreetmap-carto.style $import
+
+    echo "Creating indexes into gis..."
+    $asweb psql -d gis -f /usr/share/mapnik/openstreetmap-carto/indexes.sql
+
+    echo "Import done!"
 }
 
 # render tiles via render_list
