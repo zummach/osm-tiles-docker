@@ -54,6 +54,7 @@ Using [`Docker Compose`](https://docs.docker.com/compose/) and a dedicated [`doc
 ```sh
 $ docker-compose run --rm perturbations-osm initdb
 $ docker-compose run --rm perturbations-osm import
+$ docker-compose run --rm perturbations-osm render
 $ docker-compose up -d
 ```
 

@@ -205,6 +205,10 @@ RUN rm -Rf /var/lib/postgresql/9.5/main
 RUN mkdir -p /var/run/postgresql/9.5-main.pg_stat_tmp
 RUN chown postgres:postgres /var/run/postgresql/9.5-main.pg_stat_tmp -R
 
+#Add the perl script to render only an extract of the map
+COPY ./build/render_list_geo.pl /opt/
+RUN chmod +x /opt/render_list_geo.pl
+
 # Add the entrypoint
 COPY ./build/run.sh /usr/local/sbin/run
 RUN chmod +x /usr/local/sbin/run /etc/sv/renderd/run /etc/sv/apache2/run /etc/sv/postgresql/check /etc/sv/postgresql/run

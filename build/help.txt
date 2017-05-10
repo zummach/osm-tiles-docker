@@ -76,6 +76,13 @@ Render tiles:
   to `render_list`. This can be disabled by setting the setting the `OSM_RENDER_FORCE`
   environment variable to false.
 
+  To render only an extract of the map, use the following environment variables which are geo coordinates (WGS-84):
+  `OSM_RENDER_X_MIN`, `OSM_RENDER_X_MAX`, `OSM_RENDER_Y_MIN` and `OSM_RENDER_Y_MAX`.
+
+  The following will render tiles to a min-zoom level of 10, a max-zoom level of 19, but only for the Region of Rennes (France):
+
+  docker run --rm --env OSM_RENDER_MIN_ZOOM=10 --env OSM_RENDER_MAX_ZOOM=19 --env OSM_RENDER_X_MIN=-1.73318 --env OSM_RENDER_X_MAX=-1.56313 --env OSM_RENDER_Y_MIN=48.07221 --env OSM_RENDER_Y_MAX=48.14671 -v nvpostgisdata:/var/lib/postgresql -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles render
+
 Start the webserver:
   Once data is loaded and users have been created run the webserver:
 

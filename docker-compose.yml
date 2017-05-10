@@ -34,8 +34,13 @@ services:
     environment:
       OSM_IMPORT_FILE: '/tmp/import.osm.pbf'
       OSM_IMPORT_CACHE: '8000'
-      OSM_RENDER_MAX_ZOOM: '12'
-      OSM_RENDER_FORCE: 'false'
+      OSM_RENDER_MIN_ZOOM: '10'
+      OSM_RENDER_MAX_ZOOM: '19'
+      OSM_RENDER_THREADS: 4
+      OSM_RENDER_X_MIN: -1.73318
+      OSM_RENDER_X_MAX: -1.56313
+      OSM_RENDER_Y_MIN: 48.07221
+      OSM_RENDER_Y_MAX: 48.14671
     ports:
       - '80:80'
     command: 'startservices'

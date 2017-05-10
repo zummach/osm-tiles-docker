@@ -114,16 +114,23 @@ render () {
     sleep 10
     min_zoom=${OSM_RENDER_MIN_ZOOM:-0}
     max_zoom=${OSM_RENDER_MAX_ZOOM:-8}
-    render_force_arg=$( [ "$OSM_RENDER_FORCE" != false ] && echo '--force' || echo '' )
+    render_force_arg=$( [ "$OSM_RENDER_FORCE" != false ] && echo '-f' || echo '' )
     number_processes=${OSM_RENDER_THREADS:-`nproc`}
     # Limit to 8 to prevent overwhelming pg with connections
     if test $number_processes -ge 8
     then
         number_processes=8
     fi
-    echo "Rendering OSM tiles"
 
-    $asweb render_list $render_force_arg --all --min-zoom $min_zoom --max-zoom $max_zoom --num-threads $number_processes
+    echo "Rendering OSM tiles"
+    if [ -n "$OSM_RENDER_X_MIN" ] && [ -n "$OSM_RENDER_X_MAX" ] && [ -n "$OSM_RENDER_Y_MIN" ] && [ -n "$OSM_RENDER_Y_MAX" ]
+    then
+        echo "$asweb /opt/render_list_geo.pl -n $number_processes $render_force_arg -z $min_zoom -Z $max_zoom -x $OSM_RENDER_X_MIN -X $OSM_RENDER_X_MAX -y $OSM_RENDER_Y_MIN -Y $OSM_RENDER_Y_MAX"
+        $asweb /opt/render_list_geo.pl -n $number_processes $render_force_arg -z $min_zoom -Z $max_zoom -x $OSM_RENDER_X_MIN -X $OSM_RENDER_X_MAX -y $OSM_RENDER_Y_MIN -Y $OSM_RENDER_Y_MAX
+    else
+        echo "$asweb render_list $render_force_arg --all --min-zoom $min_zoom --max-zoom $max_zoom --num-threads $number_processes"
+        $asweb render_list $render_force_arg --all --min-zoom $min_zoom --max-zoom $max_zoom --num-threads $number_processes
+    fi
 }
 
 dropdb () {
