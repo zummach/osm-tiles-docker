@@ -7,8 +7,8 @@ This is a **Docker** image that provides a full stack for working w/ **OpenStree
 - Initialize **PostgreSQL** database w/ **PostGIS** extensions: `initdb`
 - Import **OpenStreetMap** data into **PostgreSQL** database: `import`
 - Optionally pre-generate tiles: `render`
-- Serve pre-generated (if available) and dynamically generated tiles from **Apache**, **renderd** and **mapnik** via an **OpenLayers** interface: `startservices`
-- Serve exclusively pre-generated tiles from **Apache** via an **OpenLayers** interface: `startweb`
+- Serve pre-generated (if available) and dynamically generated tiles from **Apache**, **renderd** and **mapnik** via a **Leaflet** interface: `startservices`
+- Serve exclusively pre-generated tiles from **Apache** via a **Leaflet** interface: `startweb`
 
 ## Background
 

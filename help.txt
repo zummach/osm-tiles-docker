@@ -75,7 +75,7 @@ Start the webserver:
 
   docker run -d -P -v nvpostgisdata:/var/lib/postgresql -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles startservices
 
-  A demo index.html page, based on a simple OpenLayers example configured to load
+  A demo index.html page, based on a simple Leaflet example configured to load
   the image's OpenStreetMap tiles as its base layer, is served as Apache's root document.
   If localhost's port 8080 is forwarded to the image's port 80, then the demo
   index.html will be available @:
