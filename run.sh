@@ -92,8 +92,8 @@ render () {
     _startservice renderd
     # wait for services to start
     sleep 10
-    min_zoom=${OSM_MIN_ZOOM:-0}
-    max_zoom=${OSM_MAX_ZOOM:-8}
+    min_zoom=${OSM_RENDER_MIN_ZOOM:-0}
+    max_zoom=${OSM_RENDER_MAX_ZOOM:-8}
     render_force_arg=$( [ "$OSM_RENDER_FORCE" != false ] && echo '--force' || echo '' )
     number_processes=${OSM_RENDER_THREADS:-`nproc`}
     # Limit to 8 to prevent overwhelming pg with connections

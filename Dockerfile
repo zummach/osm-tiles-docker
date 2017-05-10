@@ -1,15 +1,15 @@
-## -*- docker-image-name: "ncareol/osm-tiles" -*-
+## -*- docker-image-name: "zavpyj/osm-tiles" -*-
 
 ##
 # The OpenStreetMap Tile Server
 #
-# This creates an image with containing the OpenStreetMap tile server stack as
+# This creates an image containing the OpenStreetMap tile server stack as
 # described at
-# <http://switch2osm.org/serving-tiles/manually-building-a-tile-server-12-04/>.
+# <https://switch2osm.org/serving-tiles/manually-building-a-tile-server-14-04/>.
 #
 
 FROM ncareol/baseimage:0.9.18
-MAINTAINER Erik Johnson <ej@ucar.edu>
+MAINTAINER Xavier Guille <xguille@hotmail.com>
 
 # Set the locale. This affects the encoding of the Postgresql template
 # databases.
@@ -39,7 +39,7 @@ RUN cd /tmp && git clone git://github.com/openstreetmap/osm2pgsql.git && \
     make && make install && \
     cd /tmp && rm -rf /tmp/osm2pgsql
 
-# TODO: mapnik 3.0.5
+# TODO: mapnik 3.x
 
 # Install the Mapnik library
 RUN cd /tmp && git clone git://github.com/mapnik/mapnik && \

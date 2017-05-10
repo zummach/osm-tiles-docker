@@ -13,30 +13,33 @@ Commands:
   createdb         Create the osm database
   import           Import osm data into the database
   render           Render tiles from the database
+  startweb         To test previously rendered tiles without running the database and renderd
   startservices    Start the database and osm web services
   cli              Drop into a bash shell
   dropdb           Drop the osm database
+
+Prepare the external volume where the postgresql database will be persisted with a docker's named volume (mandatory to persist on Windows OS):
+  docker volume create --name nvpostgisdata -d local
+
+Idem to persist the generated tiles:
+  docker volume create --name nvtiles -d local
 
 Set up a database saved on an external volume:
   The following command will initialise the postgresql database on an external
   volume that can be used to persist the data:
 
-  docker run -v /data/osm-postgresql:/var/lib/postgresql ncareol/osm-tiles \
-         initdb
+  docker run --rm -v nvpostgisdata:/var/lib/postgresql zavpyj/osm-tiles initdb
 
 Import data:
-  The following will import the file at `/data/import.pbf` or `/data/import.osm`
-  into the database.
+  The following will import the file at `/tmp/import.pbf` or `/tmp/import.osm` into the database.
 
-  docker run -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data ncareol/osm-tiles \
-         import
+  docker run --rm -v nvpostgisdata:/var/lib/postgresql -v /tmp:/data zavpyj/osm-tiles import
 
   An alternate path to the import file can be specified via the `OSM_IMPORT_FILE` environment variable.
 
-  The following will import `/data/north-america-latest.osm.pbf`:
+  The following will import `/tmp/liechtenstein-latest.osm.pbf`:
 
-  docker run --env OSM_IMPORT_FILE="/data/north-america-latest.osm.pbf" -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data ncareol/osm-tiles \
-         import
+  docker run --rm --env OSM_IMPORT_FILE="/tmp/import.osm.pbf" -v nvpostgisdata:/var/lib/postgresql -v /tmp/liechtenstein-latest.osm.pbf:/tmp/import.osm.pbf zavpyj/osm-tiles import
 
   Caching can improve the performance of import. Cache is configured via the
   OSM_IMPORT_CACHE environment variable, which has a default value of 40MB. The value is
@@ -48,16 +51,16 @@ Import data:
   - http://wiki.openstreetmap.org/wiki/Osm2pgsql#Parameters
 
 Render tiles:
-  The following will render tiles to `/var/lib/mod_tile` via `renderd`s program `render_list`, to default max-zoom level of 8:
+  The following will render tiles to `nvtiles` via `renderd`s program `render_list`, to default max-zoom level of 8:
 
-  docker run -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data ncareol/osm-tiles render
+  docker run --rm -v nvpostgisdata:/var/lib/postgresql -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles render
 
-  Alternate min and max-zoom levels can be specified via the `OSM_MIN_ZOOM` and
-  `OSM_MAX_ZOOM` environment variables, respectively.
+  Alternate min and max-zoom levels can be specified via the `OSM_RENDER_MIN_ZOOM` and
+  `OSM_RENDER_MAX_ZOOM` environment variables, respectively.
 
   The following will render tiles to a max-zoom level of 12:
 
-  docker run --env OSM_MAX_ZOOM=12 -v /data/osm-postgresql:/var/lib/postgresql -v /tmp:/data ncareol/osm-tiles render
+  docker run --rm --env OSM_RENDER_MAX_ZOOM=12 -v nvpostgisdata:/var/lib/postgresql -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles render
 
   The number of threads used for rendering can be specified via the `OSM_RENDER_THREADS`
   environment variable. If not specified, the number of rendering threads used will either
@@ -70,8 +73,7 @@ Render tiles:
 Start the webserver:
   Once data is loaded and users have been created run the webserver:
 
-  docker run -P -v /data/osm-postgresql:/var/lib/postgresql ncareol/osm-tiles \
-         startservices
+  docker run -d -P -v nvpostgisdata:/var/lib/postgresql -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles startservices
 
   A demo index.html page, based on a simple OpenLayers example configured to load
   the image's OpenStreetMap tiles as its base layer, is served as Apache's root document.
@@ -83,7 +85,9 @@ Start the webserver:
   To test previously rendered tiles without running the database and renderd, use the
   `startweb` command:
 
-  docker run -P -v /data/mod_tile:/var/lib/mod_tile ncareol/osm-tiles \
-         startweb
+  docker run -d -P --name osmwebserver -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles startweb
 
-For further information run the cli and look at /usr/local/share/doc/README.md.
+For further information look at /usr/local/share/doc/README.md and run the cli:
+
+  docker run --rm -it -p 80:80 -v nvpostgisdata:/var/lib/postgresql -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles cli
+

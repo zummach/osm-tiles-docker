@@ -1,8 +1,8 @@
-# ncareol/osm-tiles
+# zavpyj/osm-tiles
 
 <!--About-->
 
-`ncareol/osm-tiles` is a **Docker** image that provides a full stack for working w/ **OpenStreetMap** data. It can be used to:
+This is a **Docker** image that provides a full stack for working w/ **OpenStreetMap** data. It can be used to:
 
 - Initialize **PostgreSQL** database w/ **PostGIS** extensions: `initdb`
 - Import **OpenStreetMap** data into **PostgreSQL** database: `import`
@@ -12,9 +12,9 @@
 
 ## Background
 
-This image is adapted from [`homme/openstreetmap-tiles-docker`](https://hub.docker.com/r/homme/openstreetmap-tiles-docker/), which is based on the [Switch2OSM instructions](http://switch2osm.org/serving-tiles/manually-building-a-tile-server-12-04/).
+This image is adapted from [`ncareol/osm-tiles-docker`](https://github.com/ncareol/osm-tiles-docker), which is based on [`homme/openstreetmap-tiles-docker`](https://hub.docker.com/r/homme/openstreetmap-tiles-docker/), which is based on the [Switch2OSM instructions](https://switch2osm.org/serving-tiles/manually-building-a-tile-server-14-04/).
 
-`ncareol/osm-tiles` runs **Ubuntu** 14.04 (Trusty) and is based on [ncareol/baseimage](https://hub.docker.com/r/ncareol/baseimage), which is an adaptation of [phusion/baseimage-docker](https://github.com/phusion/baseimage-docker). It includes:
+It runs **Ubuntu** 14.04 (Trusty) and is based on [ncareol/baseimage](https://hub.docker.com/r/ncareol/baseimage), which is an adaptation of [phusion/baseimage-docker](https://github.com/phusion/baseimage-docker). It includes:
 
 - **PostgreSQL** `9.3`
 - **PostGIS** extensions
@@ -23,24 +23,36 @@ This image is adapted from [`homme/openstreetmap-tiles-docker`](https://hub.dock
 - [**mapnik**](http://mapnik.org/)
 - [**mod_tile**](http://wiki.openstreetmap.org/wiki/Mod_tile), an **Apache** module that also provides scripts for rendering tiles
 
-Source code is available on **GitHub**: <https://github.com/ncareol/osm-tiles-docker>
-
-**Docker** image is available on **Docker Hub**: <https://hub.docker.com/r/ncareol/osm-tiles>
-
 ## Usage
 
-Prerequisites, configuration and a demonstration of the complete workflow are available on the [wiki](https://github.com/ncareol/osm-tiles-docker/wiki).
-
-Command reference is available in [`help.txt`](https://github.com/ncareol/osm-tiles-docker/blob/master/help.txt) or by running the image:
+To build this image:
 
 ```sh
-$ docker run ncareol/osm-tiles
+$ docker build -t zavpyj/osm-tiles .
 ```
 
-## Issues
+Command reference is available in `help.txt` or by running the image:
 
-Issues can be reported on **GitHub**: <https://github.com/ncareol/osm-tiles-docker/issues>
+```sh
+$ docker run --rm zavpyj/osm-tiles
+```
 
-## License
+To persist the postgresql database, it is advised to create beforehand a docker's named volume (mandatory to persist on Windows OS):
 
-[**GPLv3**](https://github.com/ncareol/osm-tiles-docker/blob/master/LICENSE)
+```sh
+$ docker volume create --name nvpostgisdata -d local
+```
+
+Idem to persist the generated tiles:
+
+```sh
+$ docker volume create --name nvtiles -d local
+```
+
+Using [`Docker Compose`](https://docs.docker.com/compose/) and a dedicated [`docker-compose.yml`](https://docs.docker.com/compose/compose-file/) configuration file, zavpyj/osm-tiles is even simpler to use:
+```sh
+$ docker-compose run --rm perturbations-osm initdb
+$ docker-compose run --rm perturbations-osm import
+$ docker-compose up -d
+```
+
