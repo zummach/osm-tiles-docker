@@ -160,9 +160,6 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Expose the webserver and database ports
 EXPOSE 80 5432
 
-# We need the volume for importing data from
-VOLUME ["/data"]
-
 # Set the osm2pgsql import cache size in MB. Used in `run import`.
 ENV OSM_IMPORT_CACHE 40
 
