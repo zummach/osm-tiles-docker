@@ -8,8 +8,11 @@
 # <https://switch2osm.org/serving-tiles/manually-building-a-tile-server-14-04/>.
 #
 
-FROM ncareol/baseimage:0.9.18
+FROM phusion/baseimage:0.9.19
 MAINTAINER Xavier Guille <xguille@hotmail.com>
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
 
 # Set the locale. This affects the encoding of the Postgresql template
 # databases.
@@ -51,7 +54,7 @@ RUN apt-get update -y && apt-get install -y \
     libpq-dev \
     libproj-dev \
     libprotobuf-c0-dev \
-    libtiff4-dev \
+    libtiff5-dev \
     libtool \
     libxml2-dev \
     lua5.2 \
@@ -59,14 +62,15 @@ RUN apt-get update -y && apt-get install -y \
     mapnik-utils \
     munin \
     munin-node \
-    postgresql-9.3-postgis-2.1 \
+    postgresql-9.5-postgis-2.2 \
     postgresql-contrib \
-    postgresql-server-dev-9.3 \
+    postgresql-server-dev-9.5 \
     protobuf-c-compiler \
     python-mapnik \
     python-software-properties \
     software-properties-common \
     subversion \
+    sudo \
     tar \
     ttf-unifont \
     unzip \
@@ -142,11 +146,11 @@ COPY ./build/mod_tile.conf /etc/apache2/mods-available/
 RUN a2enmod mod_tile
 
 # Ensure the webserver user can connect to the gis database
-RUN sed -i -e 's/local   all             all                                     peer/local gis www-data peer/' /etc/postgresql/9.3/main/pg_hba.conf
+RUN sed -i -e 's/local   all             all                                     peer/local gis www-data peer/' /etc/postgresql/9.5/main/pg_hba.conf
 
 # Tune postgresql
 COPY ./build/postgresql.conf.sed /tmp/
-RUN sed --file /tmp/postgresql.conf.sed --in-place /etc/postgresql/9.3/main/postgresql.conf
+RUN sed --file /tmp/postgresql.conf.sed --in-place /etc/postgresql/9.5/main/postgresql.conf
 
 # Define the application logging logic
 COPY ./build/syslog-ng.conf /etc/syslog-ng/conf.d/local.conf
@@ -164,9 +168,6 @@ RUN update-service --add /etc/sv/apache2
 COPY ./build/sv/renderd /etc/sv/renderd/
 RUN update-service --add /etc/sv/renderd
 
-# Clean up APT when done
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 # Expose the webserver and database ports
 EXPOSE 80 5432
 
@@ -179,11 +180,19 @@ COPY ./README.md /usr/local/share/doc/
 # Add the help file
 COPY ./build/help.txt /usr/local/share/doc/run/
 
-RUN rm -Rf /var/lib/postgresql/9.3/main
+RUN rm -Rf /var/lib/postgresql/9.5/main
+
+# Correct the Error: could not open temporary statistics file "/var/run/postgresql/9.5-main.pg_stat_tmp/global.tmp": No such file or directory
+RUN mkdir -p /var/run/postgresql/9.5-main.pg_stat_tmp
+RUN chown postgres:postgres /var/run/postgresql/9.5-main.pg_stat_tmp -R
 
 # Add the entrypoint
 COPY ./build/run.sh /usr/local/sbin/run
+RUN chmod +x /usr/local/sbin/run /etc/sv/renderd/run /etc/sv/apache2/run /etc/sv/postgresql/check /etc/sv/postgresql/run
 ENTRYPOINT ["/sbin/my_init", "--", "/usr/local/sbin/run"]
 
 # Default to showing the usage text
 CMD ["help"]
+
+# Clean up APT
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

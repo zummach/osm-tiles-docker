@@ -14,11 +14,11 @@ This is a **Docker** image that provides a full stack for working w/ **OpenStree
 
 This image is adapted from [`ncareol/osm-tiles-docker`](https://github.com/ncareol/osm-tiles-docker), which is based on [`homme/openstreetmap-tiles-docker`](https://hub.docker.com/r/homme/openstreetmap-tiles-docker/), which is based on the [Switch2OSM instructions](https://switch2osm.org/serving-tiles/manually-building-a-tile-server-14-04/).
 
-It runs **Ubuntu** 14.04 (Trusty) and is based on [ncareol/baseimage](https://hub.docker.com/r/ncareol/baseimage), which is an adaptation of [phusion/baseimage-docker](https://github.com/phusion/baseimage-docker). It includes:
+It runs **Ubuntu** 16.04 (Xenial) and is based on [phusion/baseimage-docker](https://github.com/phusion/baseimage-docker). It includes:
 
-- **PostgreSQL** `9.3`
+- **PostgreSQL** `9.5`
 - **PostGIS** extensions
-- **Apache** `2.2`
+- **Apache** `2.4`
 - [**osm2pgsql**](http://wiki.openstreetmap.org/wiki/Osm2pgsql)
 - [**mapnik**](http://mapnik.org/)
 - [**mod_tile**](http://wiki.openstreetmap.org/wiki/Mod_tile), an **Apache** module that also provides scripts for rendering tiles
