@@ -100,6 +100,14 @@ Start the webserver:
 
   docker run -d -P --name osmwebserver -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles startweb
 
+  To restrict use of this server based on a query string like '?keyId=authorized_access_id', use the `OSM_WEB_AUTHORIZED_IDS` environment variable, like this:
+
+  docker run -d -P --name osmwebserver --env OSM_WEB_AUTHORIZED_IDS=authorized_access_id -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles startweb
+
+  To restrict use of this server based on an HTTP_REFERER like 'www.example.com', use the `OSM_WEB_AUTHORIZED_REFERERS` environment variable, like this:
+
+  docker run -d -P --name osmwebserver --env OSM_WEB_AUTHORIZED_REFERERS=www.example.com -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles startweb
+
 For further information look at /usr/local/share/doc/README.md and run the cli:
 
   docker run --rm -it -p 80:80 -v nvpostgisdata:/var/lib/postgresql -v nvtiles:/var/lib/mod_tile zavpyj/osm-tiles cli

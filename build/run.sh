@@ -148,10 +148,25 @@ cli () {
 startservices () {
     startdb
     _startservice renderd
-    _startservice apache2
+    startweb
 }
 
 startweb () {
+    if [ -n "$OSM_WEB_AUTHORIZED_IDS" ] || [ -n "$OSM_WEB_AUTHORIZED_REFERERS" ]
+    then
+        if [ -n "$OSM_WEB_AUTHORIZED_IDS" ]
+        then
+            sed -i -e "s/#Authorized key ids: //" /etc/apache2/mods-available/rewrite.conf
+            sed -i -e "s/{{KEY_ID}}/$OSM_WEB_AUTHORIZED_IDS/" /etc/apache2/mods-available/rewrite.conf
+        fi
+        if [ -n "$OSM_WEB_AUTHORIZED_REFERERS" ]
+        then
+            sed -i -e "s/#Authorized referers: //" /etc/apache2/mods-available/rewrite.conf
+            sed -i -e "s/{{AUTHORIZED_REFERERS}}/$OSM_WEB_AUTHORIZED_REFERERS/" /etc/apache2/mods-available/rewrite.conf
+        fi
+        sed -i -e "s/#Include mods-available\/rewrite.conf/Include mods-available\/rewrite.conf/" /etc/apache2/sites-available/000-default.conf
+        a2enmod rewrite
+    fi
     _startservice apache2
 }
 

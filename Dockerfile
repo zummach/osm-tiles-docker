@@ -209,6 +209,10 @@ RUN chown postgres:postgres /var/run/postgresql/9.5-main.pg_stat_tmp -R
 COPY ./build/render_list_geo.pl /opt/
 RUN chmod +x /opt/render_list_geo.pl
 
+# Configure mod_rewrite
+COPY ./build/rewrite.conf /etc/apache2/mods-available/
+COPY ./build/000-default.conf /etc/apache2/sites-available/
+
 # Add the entrypoint
 COPY ./build/run.sh /usr/local/sbin/run
 RUN chmod +x /usr/local/sbin/run /etc/sv/renderd/run /etc/sv/apache2/run /etc/sv/postgresql/check /etc/sv/postgresql/run
