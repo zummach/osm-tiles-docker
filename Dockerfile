@@ -16,19 +16,56 @@ MAINTAINER Xavier Guille <xguille@hotmail.com>
 ENV LANG C.UTF-8
 RUN update-locale LANG=C.UTF-8
 
-# Ensure `add-apt-repository` is present
-RUN apt-get update -y
-RUN apt-get install -y software-properties-common python-software-properties
-
-RUN apt-get install -y libboost-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev libboost-regex-dev libboost-system-dev libboost-thread-dev
-
-# Install remaining dependencies
-RUN apt-get install -y subversion git-core tar unzip wget bzip2 build-essential autoconf libtool libxml2-dev libgeos-dev libpq-dev libbz2-dev munin-node munin libprotobuf-c0-dev protobuf-c-compiler libfreetype6-dev libpng12-dev libtiff4-dev libicu-dev libgdal-dev libcairo-dev libcairomm-1.0-dev apache2 apache2-dev libagg-dev liblua5.2-dev ttf-unifont
-
-RUN apt-get install -y autoconf apache2-dev libtool libxml2-dev libbz2-dev libgeos-dev libgeos++-dev libproj-dev gdal-bin libgdal1-dev mapnik-utils python-mapnik libmapnik-dev
-
-# Install postgresql and postgis
-RUN apt-get install -y postgresql-9.3-postgis-2.1 postgresql-contrib postgresql-server-dev-9.3
+# Update cache and install dependencies
+RUN apt-get update -y && apt-get install -y \
+    apache2 \
+    apache2-dev \
+    autoconf \
+    build-essential \
+    bzip2 \
+    gdal-bin \
+    git-core \
+    libagg-dev \
+    libboost-dev \
+    libboost-filesystem-dev \
+    libboost-program-options-dev \
+    libboost-python-dev \
+    libboost-regex-dev \
+    libboost-system-dev \
+    libboost-thread-dev \
+    libbz2-dev \
+    libcairo-dev \
+    libcairomm-1.0-dev \
+    libfreetype6-dev \
+    libgdal-dev \
+    libgdal1-dev \
+    libgeos-dev \
+    libgeos++-dev \
+    libicu-dev \
+    liblua5.2-dev \
+    libmapnik-dev \
+    libpng12-dev \
+    libpq-dev \
+    libproj-dev \
+    libprotobuf-c0-dev \
+    libtiff4-dev \
+    libtool \
+    libxml2-dev \
+    mapnik-utils \
+    munin \
+    munin-node \
+    postgresql-9.3-postgis-2.1 \
+    postgresql-contrib \
+    postgresql-server-dev-9.3 \
+    protobuf-c-compiler \
+    python-mapnik \
+    python-software-properties \
+    software-properties-common \
+    subversion \
+    tar \
+    ttf-unifont \
+    unzip \
+    wget
 
 # Install osm2pgsql
 RUN cd /tmp && git clone git://github.com/openstreetmap/osm2pgsql.git && \
