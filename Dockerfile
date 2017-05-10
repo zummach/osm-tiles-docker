@@ -23,6 +23,8 @@ RUN apt-get update -y && apt-get install -y \
     autoconf \
     build-essential \
     bzip2 \
+    cmake \
+    g++ \
     gdal-bin \
     git-core \
     libagg-dev \
@@ -36,6 +38,7 @@ RUN apt-get update -y && apt-get install -y \
     libbz2-dev \
     libcairo-dev \
     libcairomm-1.0-dev \
+    libexpat1-dev \
     libfreetype6-dev \
     libgdal-dev \
     libgdal1-dev \
@@ -51,6 +54,8 @@ RUN apt-get update -y && apt-get install -y \
     libtiff4-dev \
     libtool \
     libxml2-dev \
+    lua5.2 \
+    make \
     mapnik-utils \
     munin \
     munin-node \
@@ -65,14 +70,14 @@ RUN apt-get update -y && apt-get install -y \
     tar \
     ttf-unifont \
     unzip \
-    wget
+    wget \
+    zlib1g-dev
 
 # Install osm2pgsql
-RUN cd /tmp && git clone https://github.com/openstreetmap/osm2pgsql.git && \
+ENV OSM2PGSQL_VERSION 0.92.0
+RUN git clone --depth 1 --branch ${OSM2PGSQL_VERSION} https://github.com/openstreetmap/osm2pgsql.git /tmp/osm2pgsql && \
     cd /tmp/osm2pgsql && \
-    git checkout 0.88.1 && \
-    ./autogen.sh && \
-    ./configure && \
+    mkdir build && cd build && cmake .. && \
     make && make install && \
     cd /tmp && rm -rf /tmp/osm2pgsql
 
