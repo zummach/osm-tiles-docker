@@ -190,7 +190,7 @@ RUN update-service --add /etc/sv/renderd
 # Expose the webserver and database ports
 EXPOSE 80 5432
 
-# Set the osm2pgsql import cache size in MB. Used in `run import`.
+# Set the osm2pgsql import cache size in MB. Used in `run import` and `run importappend`.
 ENV OSM_IMPORT_CACHE 40
 
 # Add the README

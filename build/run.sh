@@ -86,12 +86,24 @@ import () {
         number_processes=8
     fi
 
-    $asweb osm2pgsql --slim --hstore --cache $OSM_IMPORT_CACHE --database gis --number-processes $number_processes --style /usr/share/mapnik/openstreetmap-carto/openstreetmap-carto.style $import
+    append=$1
+    if [ "$append" = "append" ]
+    then
+        append="--append "
+    else
+        append=""
+    fi
+
+    $asweb osm2pgsql $append--slim --hstore --cache $OSM_IMPORT_CACHE --database gis --number-processes $number_processes --style /usr/share/mapnik/openstreetmap-carto/openstreetmap-carto.style $import
 
     echo "Creating indexes into gis..."
     $asweb psql -d gis -f /usr/share/mapnik/openstreetmap-carto/indexes.sql
 
     echo "Import done!"
+}
+
+importappend () {
+    import "append"
 }
 
 # render tiles via render_list
