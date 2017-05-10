@@ -21,6 +21,7 @@ It runs **Ubuntu** 16.04 (Xenial) and is based on [phusion/baseimage-docker](htt
 - **Apache** `2.4`
 - [**osm2pgsql**](http://wiki.openstreetmap.org/wiki/Osm2pgsql)
 - [**mapnik**](http://mapnik.org/)
+- [**openstreetmap-carto**](https://github.com/gravitystorm/openstreetmap-carto), a CartoCSS template (mapnik style) for OpenStreetMap data
 - [**mod_tile**](http://wiki.openstreetmap.org/wiki/Mod_tile), an **Apache** module that also provides scripts for rendering tiles
 
 ## Usage

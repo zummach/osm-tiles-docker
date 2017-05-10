@@ -69,7 +69,6 @@ RUN apt-get update -y && apt-get install -y \
     python-mapnik \
     python-software-properties \
     software-properties-common \
-    subversion \
     sudo \
     tar \
     ttf-unifont \
@@ -85,20 +84,53 @@ RUN git clone --depth 1 --branch ${OSM2PGSQL_VERSION} https://github.com/openstr
     make && make install && \
     cd /tmp && rm -rf /tmp/osm2pgsql
 
-# TODO: mapnik 3.x
+############## Install of nodejs : start ##############
+RUN groupadd --gid 1000 node \
+  && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
 
-# Install the Mapnik library
-RUN cd /tmp && git clone https://github.com/mapnik/mapnik && \
-    cd /tmp/mapnik && \
-    git checkout 2.2.x && \
-    python scons/scons.py configure INPUT_PLUGINS=all OPTIMIZATION=3 SYSTEM_FONTS=/usr/share/fonts/truetype/ && \
-    python scons/scons.py && \
-    python scons/scons.py install && \
-    ldconfig && \
-    cd /tmp && rm -rf /tmp/mapnik
+# gpg keys listed at https://github.com/nodejs/node
+RUN set -ex \
+  && for key in \
+    9554F04D7259F04124DE6B476D5A82AC7E37093B \
+    94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
+    0034A06D9D9B0064CE8ADF6BF1747F4AD2306D93 \
+    FD3A5288F042B6850C66B31F09FE44734EB7990E \
+    71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
+    DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
+    B9AE9905FFD7803F25714661B63B535A4C206CA9 \
+    C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
+  ; do \
+    gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key"; \
+  done
 
-# Verify that Mapnik has been installed correctly
-RUN python -c 'import mapnik'
+ENV NPM_CONFIG_LOGLEVEL info
+ENV NODE_VERSION 6.9.4
+
+RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
+  && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
+  && gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc \
+  && grep " node-v$NODE_VERSION-linux-x64.tar.xz\$" SHASUMS256.txt | sha256sum -c - \
+  && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 \
+  && rm "node-v$NODE_VERSION-linux-x64.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
+  && ln -s /usr/local/bin/node /usr/local/bin/nodejs
+############## Install of nodejs :  end  ##############
+
+RUN npm install -g carto@0.16.3
+
+# Install CartoCSS template for OpenStreetMap data
+ENV OSM_CARTO_VERSION 3.0.1
+RUN cd /tmp && \
+    wget https://github.com/gravitystorm/openstreetmap-carto/archive/v$OSM_CARTO_VERSION.tar.gz && \
+    tar -xzf v$OSM_CARTO_VERSION.tar.gz && \
+    rm -f v$OSM_CARTO_VERSION.tar.gz && \
+    mkdir /usr/share/mapnik && \
+    mv /tmp/openstreetmap-carto-$OSM_CARTO_VERSION /usr/share/mapnik/openstreetmap-carto && \
+    cd /usr/share/mapnik/openstreetmap-carto && \
+    ./scripts/get-shapefiles.py && \
+    cp project.mml project.mml.orig && \
+    nodejs /usr/local/bin/carto project.mml > style.xml && \
+    find /usr/share/mapnik/openstreetmap-carto/data \( -type f -iname "*.zip" -o -iname "*.tgz" \) -delete
+
 
 # Install mod_tile and renderd
 #master is not a good point to rely on, but no tag exists on mod_tile Github's project since v0.4 (2011) !
@@ -116,22 +148,8 @@ RUN cd /tmp && git clone https://github.com/openstreetmap/mod_tile.git && \
     ldconfig && \
     cd /tmp && rm -rf /tmp/mod_tile
 
-# Install the Mapnik stylesheet
-RUN cd /usr/local/src && svn co http://svn.openstreetmap.org/applications/rendering/mapnik mapnik-style
-
-# Install the coastline data
-RUN cd /usr/local/src/mapnik-style && ./get-coastlines.sh /usr/local/share
-
-# Configure mapnik style-sheets
-RUN cd /usr/local/src/mapnik-style/inc && cp fontset-settings.xml.inc.template fontset-settings.xml.inc
-COPY ./build/datasource-settings.sed /tmp/
-RUN cd /usr/local/src/mapnik-style/inc && sed --file /tmp/datasource-settings.sed  datasource-settings.xml.inc.template > datasource-settings.xml.inc
-COPY ./build/settings.sed /tmp/
-RUN cd /usr/local/src/mapnik-style/inc && sed --file /tmp/settings.sed  settings.xml.inc.template > settings.xml.inc
-
-# Configure renderd
-COPY ./build/renderd.conf.sed /tmp/
-RUN cd /usr/local/etc && sed --file /tmp/renderd.conf.sed --in-place renderd.conf
+RUN cp -p /usr/local/etc/renderd.conf /usr/local/etc/renderd.conf.orig
+COPY ./build/renderd.conf /usr/local/etc/
 
 # Create the files required for the mod_tile system to run
 RUN mkdir /var/run/renderd && chown www-data: /var/run/renderd
