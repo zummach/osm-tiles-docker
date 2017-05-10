@@ -213,6 +213,13 @@ RUN chmod +x /opt/render_list_geo.pl
 COPY ./build/rewrite.conf /etc/apache2/mods-available/
 COPY ./build/000-default.conf /etc/apache2/sites-available/
 
+# Without clothes picto
+RUN cp /usr/share/mapnik/openstreetmap-carto/amenity-points.mss /usr/share/mapnik/openstreetmap-carto/amenity-points.mss.orig && \
+    cp /usr/share/mapnik/openstreetmap-carto/style.xml /usr/share/mapnik/openstreetmap-carto/style.xml.orig
+COPY ./build/amenity-points_without_clothes.mss /usr/share/mapnik/openstreetmap-carto/amenity-points.mss
+RUN cd /usr/share/mapnik/openstreetmap-carto && \
+    nodejs /usr/local/bin/carto project.mml > style.xml
+
 # Add the entrypoint
 COPY ./build/run.sh /usr/local/sbin/run
 RUN chmod +x /usr/local/sbin/run /etc/sv/renderd/run /etc/sv/apache2/run /etc/sv/postgresql/check /etc/sv/postgresql/run
