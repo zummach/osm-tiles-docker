@@ -68,7 +68,7 @@ RUN apt-get update -y && apt-get install -y \
     wget
 
 # Install osm2pgsql
-RUN cd /tmp && git clone git://github.com/openstreetmap/osm2pgsql.git && \
+RUN cd /tmp && git clone https://github.com/openstreetmap/osm2pgsql.git && \
     cd /tmp/osm2pgsql && \
     git checkout 0.88.1 && \
     ./autogen.sh && \
@@ -79,7 +79,7 @@ RUN cd /tmp && git clone git://github.com/openstreetmap/osm2pgsql.git && \
 # TODO: mapnik 3.x
 
 # Install the Mapnik library
-RUN cd /tmp && git clone git://github.com/mapnik/mapnik && \
+RUN cd /tmp && git clone https://github.com/mapnik/mapnik && \
     cd /tmp/mapnik && \
     git checkout 2.2.x && \
     python scons/scons.py configure INPUT_PLUGINS=all OPTIMIZATION=3 SYSTEM_FONTS=/usr/share/fonts/truetype/ && \
@@ -92,7 +92,7 @@ RUN cd /tmp && git clone git://github.com/mapnik/mapnik && \
 RUN python -c 'import mapnik'
 
 # Install mod_tile and renderd
-RUN cd /tmp && git clone git://github.com/openstreetmap/mod_tile.git && \
+RUN cd /tmp && git clone https://github.com/openstreetmap/mod_tile.git && \
     cd /tmp/mod_tile && \
     ./autogen.sh && \
     ./configure && \
@@ -172,6 +172,8 @@ ADD README.md /usr/local/share/doc/
 # Add the help file
 RUN mkdir -p /usr/local/share/doc/run
 ADD help.txt /usr/local/share/doc/run/help.txt
+
+RUN rm -Rf /var/lib/postgresql/9.3/main
 
 # Add the entrypoint
 ADD run.sh /usr/local/sbin/run
