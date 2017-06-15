@@ -76,6 +76,9 @@ RUN apt-get update -y && apt-get install -y \
     wget \
     zlib1g-dev
 
+# Avoid munin cron tasks and associated logs
+RUN rm -f /etc/cron.d/munin /etc/cron.d/munin-node /etc/cron.d/sysstat
+
 # Install osm2pgsql
 ENV OSM2PGSQL_VERSION 0.92.0
 RUN git clone --depth 1 --branch ${OSM2PGSQL_VERSION} https://github.com/openstreetmap/osm2pgsql.git /tmp/osm2pgsql && \
