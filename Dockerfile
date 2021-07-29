@@ -9,10 +9,9 @@
 #
 
 FROM phusion/baseimage:0.9.19
-MAINTAINER Xavier Guille <xguille@hotmail.com>
 
 # Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
+#CMD ["/sbin/my_init"]
 
 # Set the locale. This affects the encoding of the Postgresql template
 # databases.
@@ -79,49 +78,22 @@ RUN apt-get update -y && apt-get install -y \
 # Avoid munin cron tasks and associated logs
 RUN rm -f /etc/cron.d/munin /etc/cron.d/munin-node /etc/cron.d/sysstat
 
+############## Install of nodejs : start ##############
+RUN curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+RUN sudo apt-get install nodejs -y 
+############## Install of nodejs :  end  ##############
+
 # Install osm2pgsql
-ENV OSM2PGSQL_VERSION 0.92.0
+ENV OSM2PGSQL_VERSION 1.0.0
 RUN git clone --depth 1 --branch ${OSM2PGSQL_VERSION} https://github.com/openstreetmap/osm2pgsql.git /tmp/osm2pgsql && \
     cd /tmp/osm2pgsql && \
     mkdir build && cd build && cmake .. && \
     make && make install && \
     cd /tmp && rm -rf /tmp/osm2pgsql
 
-############## Install of nodejs : start ##############
-RUN groupadd --gid 1000 node \
-  && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
-
-# gpg keys listed at https://github.com/nodejs/node
-RUN set -ex \
-  && for key in \
-    9554F04D7259F04124DE6B476D5A82AC7E37093B \
-    94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
-    0034A06D9D9B0064CE8ADF6BF1747F4AD2306D93 \
-    FD3A5288F042B6850C66B31F09FE44734EB7990E \
-    71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
-    DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
-    B9AE9905FFD7803F25714661B63B535A4C206CA9 \
-    C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
-  ; do \
-    gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key"; \
-  done
-
-ENV NPM_CONFIG_LOGLEVEL info
-ENV NODE_VERSION 6.9.4
-
-RUN curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
-  && curl -SLO "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
-  && gpg --batch --decrypt --output SHASUMS256.txt SHASUMS256.txt.asc \
-  && grep " node-v$NODE_VERSION-linux-x64.tar.xz\$" SHASUMS256.txt | sha256sum -c - \
-  && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 \
-  && rm "node-v$NODE_VERSION-linux-x64.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
-  && ln -s /usr/local/bin/node /usr/local/bin/nodejs
-############## Install of nodejs :  end  ##############
-
-RUN npm install -g carto@0.16.3
-
 # Install CartoCSS template for OpenStreetMap data
-ENV OSM_CARTO_VERSION 3.0.1
+RUN npm install -g carto@1.2.0
+ENV OSM_CARTO_VERSION 4.23.0
 RUN cd /tmp && \
     wget https://github.com/gravitystorm/openstreetmap-carto/archive/v$OSM_CARTO_VERSION.tar.gz && \
     tar -xzf v$OSM_CARTO_VERSION.tar.gz && \
@@ -131,17 +103,16 @@ RUN cd /tmp && \
     cd /usr/share/mapnik/openstreetmap-carto && \
     ./scripts/get-shapefiles.py && \
     cp project.mml project.mml.orig && \
-    nodejs /usr/local/bin/carto project.mml > style.xml && \
+    carto project.mml > style.xml && \
     find /usr/share/mapnik/openstreetmap-carto/data \( -type f -iname "*.zip" -o -iname "*.tgz" \) -delete
 
 COPY ./build/drop_indexes.sql /usr/share/mapnik/openstreetmap-carto/
 
 # Install mod_tile and renderd
-#master is not a good point to rely on, but no tag exists on mod_tile Github's project since v0.4 (2011) !
-#So we rely on the last commit of the master branch at the time of this Dockerfile
-ENV MOD_TILE_VERSION e25bfdba1c1f2103c69529f1a30b22a14ce311f1
+#We rely on the last commit of the switch2osm's branch at the time of this Dockerfile
+ENV MOD_TILE_VERSION aa3d8edd778220e8e701e56d8bc7f16286060520
 ENV MOD_TILE_PARALLEL_BUILD 4
-RUN cd /tmp && git clone https://github.com/openstreetmap/mod_tile.git && \
+RUN cd /tmp && git clone --branch switch2osm https://github.com/SomeoneElseOSM/mod_tile.git && \
     cd /tmp/mod_tile && \
     git reset --hard $MOD_TILE_VERSION && \
     ./autogen.sh && \
@@ -150,7 +121,13 @@ RUN cd /tmp && git clone https://github.com/openstreetmap/mod_tile.git && \
     make install && \
     make install-mod_tile && \
     ldconfig && \
+    # Build to meta2tile utility and copy onto system path
+    cd extra && \
+    make && \
+    cp meta2tile /usr/local/bin && \
+    # Tidy up
     cd /tmp && rm -rf /tmp/mod_tile
+
 
 RUN cp -p /usr/local/etc/renderd.conf /usr/local/etc/renderd.conf.orig
 COPY ./build/renderd.conf /usr/local/etc/
@@ -216,13 +193,13 @@ RUN chmod +x /opt/render_list_geo.pl
 COPY ./build/rewrite.conf /etc/apache2/mods-available/
 COPY ./build/000-default.conf /etc/apache2/sites-available/
 
+# Clean up APT
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # Add the entrypoint
-COPY ./build/run.sh /usr/local/sbin/run
+ADD ./build/run.sh /usr/local/sbin/run
 RUN chmod +x /usr/local/sbin/run /etc/sv/renderd/run /etc/sv/apache2/run /etc/sv/postgresql/check /etc/sv/postgresql/run
 ENTRYPOINT ["/sbin/my_init", "--", "/usr/local/sbin/run"]
 
 # Default to showing the usage text
-CMD ["help"]
-
-# Clean up APT
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+#CMD ["help"]

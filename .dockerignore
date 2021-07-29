@@ -1,5 +1,5 @@
 .git
-*.osm.pbf
+*.pbf
 .vagrant*
 tmp
 wiki
