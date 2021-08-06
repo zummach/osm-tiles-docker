@@ -3,19 +3,19 @@ version: '2'
 services:
   app-osm:
     build: .
-    image: zavpyj/osm-tiles
+    image: zummach/tiles
     volumes:
       - ./bretagne-latest.osm.pbf:/tmp/import.osm.pbf
     environment:
       OSM_IMPORT_FILE: '/tmp/import.osm.pbf'
       OSM_IMPORT_CACHE: '8000'
-      OSM_RENDER_MIN_ZOOM: '10'
-      OSM_RENDER_MAX_ZOOM: '19'
+      OSM_RENDER_MIN_ZOOM: '0'
+      OSM_RENDER_MAX_ZOOM: '10'
       OSM_RENDER_THREADS: 4
-      OSM_RENDER_X_MIN: -1.73318
-      OSM_RENDER_X_MAX: -1.56313
-      OSM_RENDER_Y_MIN: 48.07221
-      OSM_RENDER_Y_MAX: 48.14671
+      # OSM_RENDER_X_MIN: -1.73318
+      # OSM_RENDER_X_MAX: -1.56313
+      # OSM_RENDER_Y_MIN: 48.07221
+      # OSM_RENDER_Y_MAX: 48.14671
       # To restrict acces according to specific keys in QUERY_STRING
       #  (in URLs like http://osmserver_hostname:osmserver_port/osm_tiles/{z}/{x}/{y}.png?keyId=abcdefghijklmnopqrstuvwxyz1234567890 - see sample file "test_with_keyId.html"),
       #  use OSM_WEB_AUTHORIZED_IDS (multiple values must be pipe ('|') separated):

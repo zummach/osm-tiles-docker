@@ -106,6 +106,15 @@ importappend () {
     import "append"
 }
 
+update () {
+    sv stop apache2
+    sv stop renderd
+    curl --fail $OSM_UPDATE_LINK --output /tmp/import.osm.pbf
+    import
+    sv start renderd
+    sv start apache2
+}
+
 # render tiles via render_list
 render () {
     startdb

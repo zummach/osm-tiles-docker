@@ -38,6 +38,7 @@ services:
       OSM_RENDER_MIN_ZOOM: '0'
       OSM_RENDER_MAX_ZOOM: '8'
       OSM_RENDER_THREADS: 4
+      OSM_UPDATE_LINK: 'https://download.geofabrik.de/south-america/brazil/nordeste-latest.osm.pbf'
       # OSM_RENDER_X_MIN: -1.73318
       # OSM_RENDER_X_MAX: -1.56313
       # OSM_RENDER_Y_MIN: 48.07221
