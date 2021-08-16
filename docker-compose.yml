@@ -22,7 +22,7 @@ version: '2'
 # docker volume rm nvpostgisdata
 # docker volume rm nvtiles
 services:
-  app-osm:
+  app_osm:
     build: .
     image: zummach/tiles
     volumes:
@@ -38,7 +38,7 @@ services:
       OSM_RENDER_MIN_ZOOM: '0'
       OSM_RENDER_MAX_ZOOM: '8'
       OSM_RENDER_THREADS: 4
-      OSM_UPDATE_LINK: 'https://download.geofabrik.de/south-america/brazil/nordeste-latest.osm.pbf'
+      OSM_UPDATE_LINK: 'http://download.geofabrik.de/south-america/brazil/sul-latest.osm.pbf'
       # OSM_RENDER_X_MIN: -1.73318
       # OSM_RENDER_X_MAX: -1.56313
       # OSM_RENDER_Y_MIN: 48.07221
@@ -49,11 +49,50 @@ services:
       #OSM_WEB_AUTHORIZED_IDS: 'abcdefghijklmnopqrstuvwxyz1234567890|another_id'
       # To restrict acces according to specific HTTP REFERERS, use OSM_WEB_AUTHORIZED_REFERERS (multiple values must be pipe ('|') separated):
       #OSM_WEB_AUTHORIZED_REFERERS: 'www.example.com|www.example2.com'
-    ports:
-      - '80:80'
     command: 'startservices'
+  app_osm_alternativo:
+    build: .
+    image: zummach/tiles
+    volumes:
+      # keep postgresql database files on host in named volume "nvpostgisdata":
+      - nvpostgisdata-alt:/var/lib/postgresql
+      # keep OSM tiles on host in named volume "nvtiles":
+      - nvtiles-alt:/var/lib/mod_tile
+      # mount OSM data file from host into Docker container
+      - ./data.pbf:/tmp/import.osm.pbf
+    environment:
+      OSM_IMPORT_FILE: '/tmp/import.osm.pbf'
+      OSM_IMPORT_CACHE: '8000'
+      OSM_RENDER_MIN_ZOOM: '0'
+      OSM_RENDER_MAX_ZOOM: '8'
+      OSM_RENDER_THREADS: 4
+      OSM_UPDATE_LINK: 'http://download.geofabrik.de/south-america/brazil/sul-latest.osm.pbf'
+      # OSM_RENDER_X_MIN: -1.73318
+      # OSM_RENDER_X_MAX: -1.56313
+      # OSM_RENDER_Y_MIN: 48.07221
+      # OSM_RENDER_Y_MAX: 48.14671
+      # To restrict acces according to specific keys in QUERY_STRING
+      #  (in URLs like http://osmserver_hostname:osmserver_port/osm_tiles/{z}/{x}/{y}.png?keyId=abcdefghijklmnopqrstuvwxyz1234567890 - see sample file "test_with_keyId.html"),
+      #  use OSM_WEB_AUTHORIZED_IDS (multiple values must be pipe ('|') separated):
+      #OSM_WEB_AUTHORIZED_IDS: 'abcdefghijklmnopqrstuvwxyz1234567890|another_id'
+      # To restrict acces according to specific HTTP REFERERS, use OSM_WEB_AUTHORIZED_REFERERS (multiple values must be pipe ('|') separated):
+      #OSM_WEB_AUTHORIZED_REFERERS: 'www.example.com|www.example2.com'
+    command: 'startservices'
+  proxy:
+    image: nginx:alpine
+    volumes:
+      - ./nginx.proxy.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app_osm
+      - app_osm_alternativo
+    ports:
+      - 80:80
 volumes:
   nvpostgisdata:
     external: true
   nvtiles:
+    external: true
+  nvpostgisdata-alt:
+    external: true
+  nvtiles-alt:
     external: true
